@@ -10,4 +10,4 @@ deployment:
   master:
     branch: master
     commands:
-      - ./gradlew assemble uploadDeployGate
+      - ./gradlew assemble uploadDeployGateDebug
