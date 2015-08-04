@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -35,6 +36,10 @@ import javax.xml.xpath.XPathFactory;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private WebView mWebView;
+
+    private boolean urlLoaded;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException("invalid intent.");
         }
 
-        WebView webView = (WebView) findViewById(R.id.webView);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.addJavascriptInterface(new HolderInterface(), "holder");
-        webView.setWebViewClient(new WebViewClient() {
+        mWebView = (WebView) findViewById(R.id.webView);
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.addJavascriptInterface(new HolderInterface(), "holder");
+        mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 Uri uri = Uri.parse(url);
@@ -66,13 +71,30 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                view.loadUrl("javascript:holder.setUrl($('.article__media a').attr('href'))");
+                tryFetchUrl();
             }
         });
-        webView.loadUrl(url);
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                // for fast check url
+                Log.d(TAG, "newProgress = " + newProgress);
+                tryFetchUrl();
+            }
+        });
+        mWebView.loadUrl(url);
+    }
+
+    private void tryFetchUrl() {
+        mWebView.loadUrl("javascript:holder.setUrl($('.article__media a').attr('href'))");
     }
 
     private void startBrowser(String url) {
+        if (urlLoaded) {
+            return;
+        }
+        urlLoaded = true;
+
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(intent);
 
@@ -82,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
     private class HolderInterface {
         @JavascriptInterface
         public void setUrl(String url) {
+            Log.d(TAG, "url = " + url);
             startBrowser(url);
         }
     }
