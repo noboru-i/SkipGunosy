@@ -53,7 +53,17 @@ public class MainActivity extends AppCompatActivity {
         WebView webView = (WebView) findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.addJavascriptInterface(new HolderInterface(), "holder");
-        webView.setWebViewClient(new WebViewClient(){
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Uri uri = Uri.parse(url);
+                if (!uri.getHost().equalsIgnoreCase("gunosy.com")) {
+                    startBrowser(url);
+                    return true;
+                }
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+
             @Override
             public void onPageFinished(WebView view, String url) {
                 view.loadUrl("javascript:holder.setUrl($('.article__media a').attr('href'))");
@@ -62,14 +72,17 @@ public class MainActivity extends AppCompatActivity {
         webView.loadUrl(url);
     }
 
+    private void startBrowser(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(intent);
+
+        finish();
+    }
+
     private class HolderInterface {
         @JavascriptInterface
         public void setUrl(String url) {
-            Log.d(TAG, "url = " + url);
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(intent);
-
-            finish();
+            startBrowser(url);
         }
     }
 }
