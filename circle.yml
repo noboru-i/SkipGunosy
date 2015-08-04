@@ -1,0 +1,10 @@
+machine:
+  timezone: Asia/Tokyo
+test:
+  override:
+    - echo "skip test"
+deployment:
+  master:
+    branch: master
+    commands:
+      - ./gradlew assemble uploadDeployGate

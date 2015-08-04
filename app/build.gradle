@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'deploygate'
 
 android {
     compileSdkVersion 22
@@ -16,12 +17,32 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            applicationIdSuffix ".debug"
+        }
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:appcompat-v7:22.2.1'
 
     compile 'com.squareup.okhttp:okhttp:2.4.0'
 }
+
+deploygate {
+    userName = "$System.env.DEPLOYGATE_USER"
+    token = "$System.env.DEPLOYGATE_TOKEN"
+
+    apks {
+        debug {
+            sourceFile = file("${project.buildDir}/outputs/apk/app-debug.apk")
+        }
+        release {
+            sourceFile = file("${project.buildDir}/outputs/apk/app-release.apk")
+        }
+    }
+}
+
+uploadDeployGateDebug.dependsOn assembleDebug
+uploadDeployGateRelease.dependsOn assembleDebug
