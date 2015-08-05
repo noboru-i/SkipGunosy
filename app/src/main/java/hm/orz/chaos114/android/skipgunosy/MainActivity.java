@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -33,10 +34,18 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathFactory;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private WebView mWebView;
+    @Bind(R.id.webView)
+    WebView mWebView;
+    @Bind(R.id.loading)
+    View mLoading;
+    @Bind(R.id.attention_text)
+    View mAttentionText;
 
     private boolean urlLoaded;
 
@@ -45,17 +54,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ButterKnife.bind(this);
+
         Intent intent = getIntent();
         String action = intent.getAction();
         String url;
         if (Intent.ACTION_VIEW.equals(action)) {
             Uri uri = intent.getData();
             url = uri.toString();
+            mLoading.setVisibility(View.VISIBLE);
+            mAttentionText.setVisibility(View.GONE);
         } else {
-            throw new RuntimeException("invalid intent.");
+            mLoading.setVisibility(View.GONE);
+            mAttentionText.setVisibility(View.VISIBLE);
+            return;
         }
 
-        mWebView = (WebView) findViewById(R.id.webView);
+        setWebViewSetting();
+        mWebView.loadUrl(url);
+    }
+
+    private void setWebViewSetting() {
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.addJavascriptInterface(new HolderInterface(), "holder");
         mWebView.setWebViewClient(new WebViewClient() {
@@ -82,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
                 tryFetchUrl();
             }
         });
-        mWebView.loadUrl(url);
     }
 
     private void tryFetchUrl() {
@@ -90,6 +108,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startBrowser(String url) {
+        if (url.equals("undefined")) {
+            return;
+        }
         if (urlLoaded) {
             return;
         }
