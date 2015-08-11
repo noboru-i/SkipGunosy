@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">SkipGunosy</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="banner_ad_unit_id">ca-app-pub-9518171426809425/3084443792</string>
 </resources>

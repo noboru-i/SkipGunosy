@@ -3,6 +3,7 @@ package hm.orz.chaos114.android.skipgunosy;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,9 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -47,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.attention_text)
     View mAttentionText;
 
+    private InterstitialAd mInterstitial;
+    private Handler mHandler;
     private boolean urlLoaded;
 
     @Override
@@ -55,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+
+        mHandler = new Handler();
+        initAds();
 
         Intent intent = getIntent();
         String action = intent.getAction();
@@ -103,11 +112,25 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void initAds() {
+        mInterstitial = new InterstitialAd(this);
+        mInterstitial.setAdUnitId(getString(R.string.banner_ad_unit_id));
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mInterstitial.loadAd(adRequest);
+    }
+
+    private void displayInterstitial() {
+        if (mInterstitial.isLoaded()) {
+            mInterstitial.show();
+        }
+    }
+
     private void tryFetchUrl() {
         mWebView.loadUrl("javascript:holder.setUrl($('.article__media a').attr('href'))");
     }
 
-    private void startBrowser(String url) {
+    private void startBrowser(final String url) {
         if (url.equals("undefined")) {
             return;
         }
@@ -116,10 +139,17 @@ public class MainActivity extends AppCompatActivity {
         }
         urlLoaded = true;
 
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(intent);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                displayInterstitial();
 
-        finish();
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+
+                finish();
+            }
+        });
     }
 
     private class HolderInterface {
