@@ -2,41 +2,17 @@ package hm.orz.chaos114.android.skipgunosy;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathException;
-import javax.xml.xpath.XPathFactory;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -52,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     View mAttentionText;
 
     private InterstitialAd mInterstitial;
-    private Handler mHandler;
     private boolean urlLoaded;
 
     @Override
@@ -62,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        mHandler = new Handler();
         initAds();
 
         Intent intent = getIntent();
