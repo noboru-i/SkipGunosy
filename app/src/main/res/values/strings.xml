@@ -2,4 +2,7 @@
     <string name="app_name">SkipGunosy</string>
 
     <string name="banner_ad_unit_id">ca-app-pub-9518171426809425/3084443792</string>
+    <string name="title_activity_license">LicenseActivity</string>
+
+    <string name="action_license">License</string>
 </resources>
