@@ -32,3 +32,7 @@
 # okhttp
 -dontwarn java.nio.file.*
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+
+# play-services-ads
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**
