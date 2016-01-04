@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void tryFetchUrl() {
-        mWebView.loadUrl("javascript:holder.setUrl($('.article__media a').attr('href'))");
+        mWebView.loadUrl("javascript:holder.setUrl($('p').contents().not(\"[nodeType=1]\").attr('href'))");
     }
 
     private void startBrowser(final String url) {
