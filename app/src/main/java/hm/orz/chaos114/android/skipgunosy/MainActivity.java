@@ -12,6 +12,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void tryFetchUrl() {
-        mWebView.loadUrl("javascript:holder.setUrl($('p').contents().not(\"[nodeType=1]\").attr('href'))");
+        mWebView.loadUrl("javascript:a=document.getElementsByTagName('a');for(var i=0;i<a.length;i++){if(a[i].text.includes('元記事'))holder.setUrl(a[i].href)}");
     }
 
     private void startBrowser(final String url) {
