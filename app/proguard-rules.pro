@@ -36,3 +36,9 @@
 # play-services-ads
 -keep class com.google.android.gms.** { *; }
 -dontwarn com.google.android.gms.**
+
+# JavascriptInterface
+-keepattributes JavascriptInterface
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
