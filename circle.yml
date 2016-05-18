@@ -15,4 +15,4 @@ deployment:
   master:
     branch: master
     commands:
-      - ./gradlew assemble uploadDeployGateDebug uploadDeployGateRelease
+      - ./gradlew :app:uploadDeployGateDebug :app:uploadDeployGateRelease

@@ -47,11 +47,3 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.squareup.okhttp:okhttp:2.7.1'
 }
-
-deploygate {
-    userName = "$System.env.DEPLOYGATE_USER"
-    token = "$System.env.DEPLOYGATE_TOKEN"
-}
-
-uploadDeployGateDebug.dependsOn assembleDebug
-uploadDeployGateRelease.dependsOn assembleDebug
