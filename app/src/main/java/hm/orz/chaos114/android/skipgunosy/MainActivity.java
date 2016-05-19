@@ -3,6 +3,7 @@ package hm.orz.chaos114.android.skipgunosy;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -12,7 +13,6 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private InterstitialAd mInterstitial;
     private boolean urlLoaded;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+
+        handler = new Handler();
 
         initAds();
 
@@ -124,7 +127,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void tryFetchUrl() {
-        mWebView.loadUrl("javascript:a=document.getElementsByTagName('a');for(var i=0;i<a.length;i++){if(a[i].text.includes('元記事'))holder.setUrl(a[i].href)}");
+        String[] texts = {
+                "外部サイトで読む",
+                "元記事"
+        };
+        for (final String text : texts) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mWebView.loadUrl("javascript:a=document.getElementsByTagName('a');for(var i=0;i<a.length;i++){if(a[i].text.includes('" + text + "'))holder.setUrl(a[i].href)}");
+                }
+            });
+        }
     }
 
     private void startBrowser(final String url) {
